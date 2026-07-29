@@ -7,6 +7,7 @@ import { Dashboard } from '../pages/Dashboard';
 import { RequestList } from '../pages/RequestList';
 import { CreateRequest } from '../pages/CreateRequest';
 import { RequestDetails } from '../pages/RequestDetails';
+import { MenuList } from '../pages/MenuList';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedRoles?: ('MANAGER' | 'SUPERVISOR')[] }> = ({ children, allowedRoles }) => {
   const { isAuthenticated, user, isInitializing } = useAuth();
@@ -64,6 +65,7 @@ export const AppRoutes: React.FC = () => {
             } />
             
             {/* Shared Routes */}
+            <Route path="menu" element={<MenuList />} />
             <Route path="requests/approved" element={<RequestList type="approved" />} />
             <Route path="requests/:id" element={<RequestDetails />} />
           </Route>

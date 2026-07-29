@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, FilePlus, List, CheckCircle, LogOut } from 'lucide-react';
+import { LayoutDashboard, FilePlus, List, CheckCircle, LogOut, Utensils } from 'lucide-react';
 
 export const DashboardLayout: React.FC = () => {
   const { user, logout } = useAuth();
@@ -16,12 +16,14 @@ export const DashboardLayout: React.FC = () => {
   const navItems = user?.role === 'MANAGER' 
     ? [
         { name: 'Dashboard', path: '/', icon: LayoutDashboard },
+        { name: 'Menu', path: '/menu', icon: Utensils },
         { name: 'Create Request', path: '/requests/new', icon: FilePlus },
         { name: 'My Requests', path: '/requests/my', icon: List },
         { name: 'Approved Queue', path: '/requests/approved', icon: CheckCircle },
       ]
     : [
         { name: 'Dashboard', path: '/', icon: LayoutDashboard },
+        { name: 'Menu', path: '/menu', icon: Utensils },
         { name: 'Pending Requests', path: '/requests/pending', icon: List },
         { name: 'Approved Queue', path: '/requests/approved', icon: CheckCircle },
       ];

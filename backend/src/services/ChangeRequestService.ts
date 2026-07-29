@@ -104,9 +104,9 @@ export class ChangeRequestService {
 
       request.status = status;
       request.approvedById = supervisorId;
+      request.approvedAt = new Date();
       
       if (status === RequestStatus.APPROVED) {
-        request.approvedAt = new Date();
         // Apply the change to the menu item immediately if approved
         if (request.changeType === "PRICE_UPDATE") {
           request.item.currentPrice = parseFloat(request.newValue);
