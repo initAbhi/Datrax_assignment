@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, Index } from "typeorm";
 import { User } from "./User";
 import { MenuItem } from "./MenuItem";
 
@@ -15,6 +15,8 @@ export enum RequestStatus {
 }
 
 @Entity("change_requests")
+@Index(["createdById", "status"])
+@Index(["status", "approvedAt"])
 export class ChangeRequest {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
