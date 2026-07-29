@@ -1,50 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { changeRequestService } from '../api/services';
 import { useAuth } from '../context/AuthContext';
 import { Card, CardBody, CardHeader } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { Check, X, ArrowLeft } from 'lucide-react';
+import { useRequestDetails } from '../hooks/useRequestDetails';
 
 export const RequestDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [request, setRequest] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const fetchDetails = async () => {
-    try {
-      if (id) {
-        const response = await changeRequestService.getDetails(id);
-        if (response.data.success) setRequest(response.data.data);
-      }
-    } catch (err) {
-      setError('Failed to fetch request details');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchDetails();
-  }, [id]);
-
-  const handleAction = async (status: 'APPROVED' | 'REJECTED') => {
-    if (!id) return;
-    setActionLoading(true);
-    try {
-      await changeRequestService.updateStatus(id, status);
-      await fetchDetails();
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to update status');
-    } finally {
-      setActionLoading(false);
-    }
-  };
+  
+  const { request, loading, actionLoading, error, handleAction } = useRequestDetails(id);
 
   if (loading) return <div className="p-8 text-center text-gray-500">Loading details...</div>;
   if (error || !request) return <div className="p-8 text-red-500">{error || 'Request not found'}</div>;

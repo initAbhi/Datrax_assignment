@@ -1,43 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Table, TableHead, TableRow, TableHeader, TableCell } from '../components/ui/Table';
 import { Badge } from '../components/ui/Badge';
 import { Card } from '../components/ui/Card';
-import { changeRequestService } from '../api/services';
+import { useRequestList } from '../hooks/useRequestList';
 
 interface RequestListProps {
   type: 'my' | 'pending' | 'approved';
 }
 
 export const RequestList: React.FC<RequestListProps> = ({ type }) => {
-  const [requests, setRequests] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchRequests = async () => {
-    setLoading(true);
-    try {
-      let response;
-      if (type === 'my') {
-        response = await changeRequestService.getMyRequests();
-      } else if (type === 'pending') {
-        response = await changeRequestService.getPending();
-      } else {
-        response = await changeRequestService.getApprovedQueue();
-      }
-      
-      if (response.data.success) {
-        setRequests(response.data.data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch requests', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchRequests();
-  }, [type]);
+  const { requests, loading } = useRequestList(type);
 
   const titles = {
     my: 'My Requests',
