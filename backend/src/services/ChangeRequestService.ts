@@ -2,31 +2,24 @@ import { AppDataSource } from "../config/data-source";
 import { ChangeRequest, RequestStatus } from "../entities/ChangeRequest";
 import { MenuItem } from "../entities/MenuItem";
 import { AppError } from "../errors/AppError";
+import * as crypto from "crypto";
 
 export class ChangeRequestService {
   private changeRequestRepository = AppDataSource.getRepository(ChangeRequest);
   private menuItemRepository = AppDataSource.getRepository(MenuItem);
 
-  private async generateRequestNumber(): Promise<string> {
+  private generateRequestNumber(userId: string): string {
     const date = new Date();
     const year = date.getFullYear().toString().slice(-2);
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     
-    // Find the latest request number for the current month
     const prefix = `CR-${year}${month}-`;
-    const lastRequest = await this.changeRequestRepository
-      .createQueryBuilder("cr")
-      .where("cr.requestNumber LIKE :prefix", { prefix: `${prefix}%` })
-      .orderBy("cr.requestNumber", "DESC")
-      .getOne();
+    
+    const timestamp = Date.now().toString() + process.hrtime()[1].toString();
+    const data = `${userId}-${timestamp}`;
+    const hash = crypto.createHash('sha256').update(data).digest('hex').substring(0, 8).toUpperCase();
 
-    let nextNumber = 1;
-    if (lastRequest) {
-      const lastSeq = parseInt(lastRequest.requestNumber.split("-")[2], 10);
-      nextNumber = lastSeq + 1;
-    }
-
-    return `${prefix}${nextNumber.toString().padStart(4, '0')}`;
+    return `${prefix}${hash}`;
   }
 
   async create(data: Partial<ChangeRequest>, userId: string) {
@@ -35,7 +28,7 @@ export class ChangeRequestService {
       throw new AppError("Menu item not found", 404);
     }
 
-    const requestNumber = await this.generateRequestNumber();
+    const requestNumber = this.generateRequestNumber(userId);
 
     const changeRequest = this.changeRequestRepository.create({
       ...data,
