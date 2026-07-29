@@ -17,7 +17,7 @@ export const AppDataSource = new DataSource({
   synchronize: false,
   logging: false,
   entities: [User, MenuItem, ChangeRequest],
-  migrations: ["src/migrations/**/*.ts"],
+  migrations: [__dirname + "/../migrations/**/*.{js,ts}"],
   subscribers: [],
   options: {
     encrypt: true,
