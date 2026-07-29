@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { changeRequestService } from "../api/services";
+import type { ChangeRequest } from "../types";
 
 export const useRequestDetails = (id: string | undefined) => {
-  const [request, setRequest] = useState<any>(null);
+  const [request, setRequest] = useState<ChangeRequest | null>(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState("");

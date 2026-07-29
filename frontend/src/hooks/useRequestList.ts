@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { changeRequestService } from "../api/services";
+import { type ChangeRequest } from "../types";
 
 export type RequestListType = "my" | "pending" | "approved";
 
 export const useRequestList = (type: RequestListType) => {
-  const [requests, setRequests] = useState<any[]>([]);
+  const [requests, setRequests] = useState<ChangeRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 

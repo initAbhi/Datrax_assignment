@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { dashboardService } from '../api/services';
 import { Card, CardBody } from '../components/ui/Card';
 import { useAuth } from '../context/AuthContext';
+import type { DashboardMetrics } from '../types';
 
 export const Dashboard: React.FC = () => {
   const { user } = useAuth();
-  const [metrics, setMetrics] = useState<any>(null);
+  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,16 +38,16 @@ export const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {user?.role === 'MANAGER' ? (
           <>
-            <MetricCard title="Total Requests" value={metrics.total} />
-            <MetricCard title="Pending" value={metrics.pending} color="text-yellow-600" />
-            <MetricCard title="Approved" value={metrics.approved} color="text-green-600" />
-            <MetricCard title="Rejected" value={metrics.rejected} color="text-red-600" />
+            <MetricCard title="Total Requests" value={metrics.total || 0} />
+            <MetricCard title="Pending" value={metrics.pending || 0} color="text-yellow-600" />
+            <MetricCard title="Approved" value={metrics.approved || 0} color="text-green-600" />
+            <MetricCard title="Rejected" value={metrics.rejected || 0} color="text-red-600" />
           </>
         ) : (
           <>
-            <MetricCard title="Pending Approval" value={metrics.pendingApproval} color="text-yellow-600" />
-            <MetricCard title="Approved Today" value={metrics.approvedToday} color="text-green-600" />
-            <MetricCard title="Rejected Today" value={metrics.rejectedToday} color="text-red-600" />
+            <MetricCard title="Pending Approval" value={metrics.pendingApproval || 0} color="text-yellow-600" />
+            <MetricCard title="Approved Today" value={metrics.approvedToday || 0} color="text-green-600" />
+            <MetricCard title="Rejected Today" value={metrics.rejectedToday || 0} color="text-red-600" />
           </>
         )}
       </div>

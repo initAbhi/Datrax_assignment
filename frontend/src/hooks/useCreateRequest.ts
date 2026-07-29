@@ -8,10 +8,11 @@ import {
 } from "../schemas/changeRequest.schema";
 import { menuItemService, changeRequestService } from "../api/services";
 import { ChangeType } from "../types/enums";
+import type { MenuItem } from "../types";
 
 export const useCreateRequest = () => {
-  const [items, setItems] = useState<any[]>([]);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [items, setItems] = useState<MenuItem[]>([]);
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ export const useCreateRequest = () => {
       let oldValue = "";
       if (selectedItem) {
         if (data.changeType === ChangeType.PRICE_UPDATE) {
-          oldValue = selectedItem.currentPrice.toString();
+          oldValue = selectedItem.currentPrice?.toString() || "";
         } else if (data.changeType === ChangeType.AVAILABILITY_UPDATE) {
           oldValue = selectedItem.currentAvailability.toString();
         } else if (data.changeType === ChangeType.DESCRIPTION_UPDATE) {
