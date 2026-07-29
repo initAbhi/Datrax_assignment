@@ -2,11 +2,12 @@
 
 A professional, internal business application for managing and tracking menu change requests. Built with a modern full-stack architecture using React, Express, and Microsoft SQL Server.
 
-## 🚀 Project Overview
+## Live Demo
 
-The Menu CR Tracker allows restaurant Managers to propose changes to the menu (e.g., price updates, availability changes, description edits). Supervisors can then review these requests in their dashboard and choose to approve or reject them. The application features a clean, responsive UI tailored for internal company use.
+You can access and test a live, deployed version of the application without any setup required:
+**[https://assignment.initabhi.in/](https://assignment.initabhi.in/)**
 
-## 🛠 Tech Stack
+## Technology Stack
 
 ### Frontend
 - **React 19** & **TypeScript**
@@ -27,7 +28,7 @@ The Menu CR Tracker allows restaurant Managers to propose changes to the menu (e
 - **Helmet**, **Morgan**, **CORS** (Security & Logging)
 - **Zod** (Request Validation)
 
-## 📦 Installation & Setup
+## Installation & Setup
 
 ### 1. Database Setup (Docker)
 
@@ -45,6 +46,10 @@ cd backend
 
 # Install dependencies
 npm install
+
+# Setup Environment Variables
+# Copy the example env file and update if necessary
+cp .env.example .env
 
 # Generate and Run Database Migrations
 npm run migration:generate
@@ -65,11 +70,14 @@ cd frontend
 # Install dependencies (using bun or npm)
 bun install
 
+# Setup Environment Variables
+cp .env.example .env
+
 # Start the Frontend Server (Runs on port 5174 or 5173)
 bun run dev
 ```
 
-## 🔐 Default Login Credentials
+## Default Login Credentials
 
 The database is seeded with two default users for testing role-based access:
 
@@ -83,7 +91,7 @@ The database is seeded with two default users for testing role-based access:
 - **Password:** `password123`
 - **Role:** `SUPERVISOR`
 
-## 📁 Architecture Highlights
+## Architecture Highlights
 
 - **Clean Layered Architecture (Backend):** Separation of concerns via `Controllers` (HTTP layer), `Services` (Business logic), and `Repositories` (Database layer).
 - **Global Error Handling:** Custom `AppError` class and a global error middleware ensure consistent API responses.
