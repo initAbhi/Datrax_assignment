@@ -5,7 +5,7 @@ export class MenuItem {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column()
+  @Column({ type: "varchar", length: 255 })
   name!: string;
 
   @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
@@ -17,9 +17,9 @@ export class MenuItem {
   @Column({ type: "text", nullable: true })
   description!: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: "datetime2" })
   createdAt!: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: "datetime2" })
   updatedAt!: Date;
 }

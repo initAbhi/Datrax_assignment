@@ -10,18 +10,18 @@ export class User {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column({ unique: true })
+  @Column({ type: "varchar", length: 255, unique: true })
   email!: string;
 
-  @Column()
+  @Column({ type: "varchar", length: 255 })
   password!: string;
 
   @Column({ type: "varchar", length: 50 })
   role!: UserRole;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: "datetime2" })
   createdAt!: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: "datetime2" })
   updatedAt!: Date;
 }

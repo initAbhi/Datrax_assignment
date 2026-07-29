@@ -19,10 +19,10 @@ export class ChangeRequest {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column({ unique: true })
+  @Column({ type: "varchar", length: 255, unique: true })
   requestNumber!: string;
 
-  @ManyToOne(() => MenuItem)
+  @ManyToOne(() => MenuItem, { onDelete: "CASCADE" })
   @JoinColumn({ name: "itemId" })
   item!: MenuItem;
 
@@ -44,26 +44,26 @@ export class ChangeRequest {
   @Column({ type: "varchar", length: 50, default: RequestStatus.PENDING })
   status!: RequestStatus;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { onDelete: "NO ACTION" })
   @JoinColumn({ name: "createdById" })
   createdBy!: User;
 
   @Column()
   createdById!: string;
 
-  @ManyToOne(() => User, { nullable: true })
+  @ManyToOne(() => User, { nullable: true, onDelete: "NO ACTION" })
   @JoinColumn({ name: "approvedById" })
   approvedBy!: User | null;
 
   @Column({ nullable: true })
   approvedById!: string | null;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: "datetime2" })
   createdAt!: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: "datetime2" })
   updatedAt!: Date;
 
-  @Column({ type: "datetime", nullable: true })
+  @Column({ type: "datetime2", nullable: true })
   approvedAt!: Date | null;
 }
