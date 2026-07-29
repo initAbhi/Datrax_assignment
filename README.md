@@ -5,7 +5,7 @@ A professional, internal business application for managing and tracking menu cha
 ## Live Demo
 
 You can access and test a live, deployed version of the application without any setup required:
-**[https://assignment.initabhi.in/](https://assignment.initabhi.in/)**
+**[https://assignment-demo.initabhi.in/](https://assignment-demo.initabhi.in/)**
 
 ## Technology Stack
 
