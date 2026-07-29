@@ -40,27 +40,33 @@ export class ChangeRequestService {
     return await this.changeRequestRepository.save(changeRequest);
   }
 
-  async findAllManagerRequests(userId: string) {
+  async findAllManagerRequests(userId: string, page: number = 1, limit: number = 10) {
     return await this.changeRequestRepository.find({
       where: { createdById: userId },
       relations: { item: true, createdBy: true, approvedBy: true },
       order: { createdAt: "DESC" },
+      skip: (page - 1) * limit,
+      take: limit,
     });
   }
 
-  async findAllPending() {
+  async findAllPending(page: number = 1, limit: number = 10) {
     return await this.changeRequestRepository.find({
       where: { status: RequestStatus.PENDING },
       relations: { item: true, createdBy: true },
       order: { createdAt: "ASC" },
+      skip: (page - 1) * limit,
+      take: limit,
     });
   }
 
-  async findAllApproved() {
+  async findAllApproved(page: number = 1, limit: number = 10) {
     return await this.changeRequestRepository.find({
       where: { status: RequestStatus.APPROVED },
       relations: { item: true, createdBy: true, approvedBy: true },
       order: { approvedAt: "DESC" },
+      skip: (page - 1) * limit,
+      take: limit,
     });
   }
 
@@ -78,35 +84,49 @@ export class ChangeRequestService {
   }
 
   async updateStatus(id: string, status: RequestStatus, supervisorId: string) {
-    const request = await this.changeRequestRepository.findOne({
-      where: { id },
-      relations: { item: true },
-    });
+    const queryRunner = AppDataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    if (!request) {
-      throw new AppError("Change request not found", 404);
-    }
+    try {
+      const request = await queryRunner.manager.findOne(ChangeRequest, {
+        where: { id },
+        relations: { item: true },
+      });
 
-    if (request.status !== RequestStatus.PENDING) {
-      throw new AppError(`Request is already ${request.status}`, 400);
-    }
-
-    request.status = status;
-    request.approvedById = supervisorId;
-    
-    if (status === RequestStatus.APPROVED) {
-      request.approvedAt = new Date();
-      // Apply the change to the menu item immediately if approved
-      if (request.changeType === "PRICE_UPDATE") {
-        request.item.currentPrice = parseFloat(request.newValue);
-      } else if (request.changeType === "AVAILABILITY_UPDATE") {
-        request.item.currentAvailability = request.newValue === "true";
-      } else if (request.changeType === "DESCRIPTION_UPDATE") {
-        request.item.description = request.newValue;
+      if (!request) {
+        throw new AppError("Change request not found", 404);
       }
-      await this.menuItemRepository.save(request.item);
-    }
 
-    return await this.changeRequestRepository.save(request);
+      if (request.status !== RequestStatus.PENDING) {
+        throw new AppError(`Request is already ${request.status}`, 400);
+      }
+
+      request.status = status;
+      request.approvedById = supervisorId;
+      
+      if (status === RequestStatus.APPROVED) {
+        request.approvedAt = new Date();
+        // Apply the change to the menu item immediately if approved
+        if (request.changeType === "PRICE_UPDATE") {
+          request.item.currentPrice = parseFloat(request.newValue);
+        } else if (request.changeType === "AVAILABILITY_UPDATE") {
+          request.item.currentAvailability = request.newValue === "true";
+        } else if (request.changeType === "DESCRIPTION_UPDATE") {
+          request.item.description = request.newValue;
+        }
+        await queryRunner.manager.save(request.item);
+      }
+
+      const savedRequest = await queryRunner.manager.save(request);
+      
+      await queryRunner.commitTransaction();
+      return savedRequest;
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

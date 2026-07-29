@@ -25,7 +25,9 @@ export class ChangeRequestController {
     try {
       if (!(req as any).user) return res.status(401).json({ success: false, message: "Unauthorized" });
       
-      const requests = await changeRequestService.findAllManagerRequests((req as any).user.id);
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const requests = await changeRequestService.findAllManagerRequests((req as any).user.id, page, limit);
       
       res.status(200).json({
         success: true,
@@ -39,7 +41,9 @@ export class ChangeRequestController {
 
   async getPendingRequests(req: Request, res: Response, next: NextFunction) {
     try {
-      const requests = await changeRequestService.findAllPending();
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const requests = await changeRequestService.findAllPending(page, limit);
       
       res.status(200).json({
         success: true,
@@ -53,7 +57,9 @@ export class ChangeRequestController {
 
   async getApprovedQueue(req: Request, res: Response, next: NextFunction) {
     try {
-      const requests = await changeRequestService.findAllApproved();
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const requests = await changeRequestService.findAllApproved(page, limit);
       
       res.status(200).json({
         success: true,
